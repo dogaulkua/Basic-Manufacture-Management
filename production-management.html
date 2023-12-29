@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Management</title>
+</head>
+<body>
+    <h1>Production Management System</h1>
+    <ul id="processList"></ul>
+    <script type="module">
+        import { Actor } from "https://cdn.jsdelivr.net/dfinity/dfx/v0.8.0/esm/candid.js";
+
+        async function init() {
+            const actor = Actor.createActor(ProductionManagement, {
+                canisterId: "YOUR_CANISTER_ID" // Bu, oluşturduğunuz akıllı kontratın canister ID'siyle değiştirilmelidir.
+            });
+
+            const processListElement = document.getElementById('processList');
+
+            try {
+                const processes = await actor.getProductionProcesses();
+                processes.forEach((process) => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Process ID: ${process.processId}, Status: ${process.status}`;
+                    processListElement.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error(error);
+                processListElement.textContent = "Error retrieving production processes.";
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
